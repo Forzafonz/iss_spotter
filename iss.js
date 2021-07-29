@@ -38,4 +38,35 @@ const fetchMyIP = function(callback) {
 
 };
 
-module.exports = { fetchMyIP };
+
+const fetchCoordsByIP = function(ip, callback) {
+
+  request(`https://freegeoip.app/json/${ip}`, (error, response, body)=> {
+
+    if (error) {
+
+      callback(error, null);
+      return;
+
+
+    } else if (response.statusCode !== 200) {
+      
+      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    
+    } else {
+
+      let data = JSON.parse(body);
+      
+      callback(null, [data.latitude, data.longitude]);
+      return;
+
+    }
+
+  });
+
+};
+
+
+module.exports = { fetchMyIP, fetchCoordsByIP };
